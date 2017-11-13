@@ -18,7 +18,13 @@ public class Opinion {
 
 	@Column(nullable = false)
 	@Lob
-	private String opinion;
+	private String description;
+
+	public Opinion(String name, String description) {
+		super();
+		this.name = name;
+		this.description = description;
+	}
 
 	public long getId() {
 		return id;
@@ -29,6 +35,6 @@ public class Opinion {
 	}
 
 	public String getOpinion() {
-		return opinion;
+		return description;
 	}
 }
