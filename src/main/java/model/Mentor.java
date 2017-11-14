@@ -26,6 +26,17 @@ public class Mentor {
 	@Lob
 	private String description;
 
+	public Mentor() {
+	}
+
+	public Mentor(String firstName, String lastName, String email, String description) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.description = description;
+	}
+
 	public long getId() {
 		return id;
 	}

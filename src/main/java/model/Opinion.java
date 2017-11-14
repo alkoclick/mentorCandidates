@@ -20,6 +20,9 @@ public class Opinion {
 	@Lob
 	private String description;
 
+	public Opinion() {
+	}
+
 	public Opinion(String name, String description) {
 		super();
 		this.name = name;
