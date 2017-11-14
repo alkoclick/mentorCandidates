@@ -22,7 +22,7 @@ public class Mentor {
 	@Column(nullable = false)
 	private String email;
 
-	@Column(nullable = false)
+	@Column
 	@Lob
 	private String description;
 
