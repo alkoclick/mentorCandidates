@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 
+import org.hibernate.validator.constraints.Email;
+
 @Entity
 public class Mentor {
 
@@ -20,6 +22,7 @@ public class Mentor {
 	private String lastName;
 
 	@Column(nullable = false)
+	@Email
 	private String email;
 
 	@Column

@@ -1,29 +1,12 @@
 package implem;
 
-import org.hibernate.Session;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import model.Mentor;
 import model.Opinion;
-import util.SessionBuilder;
+import util.HibernateTest;
 
-public class PersistenceTests {
-
-	private Session session;
-
-	@Before
-	public void obtainSession() {
-		session = SessionBuilder.getSessionFactory().openSession();
-		session.beginTransaction();
-	}
-
-	@After
-	public void saveAndClose() {
-		session.getTransaction().commit();
-		session.close();
-	}
+public class PersistenceTests extends HibernateTest {
 
 	@Test
 	public void createOpinion() {
