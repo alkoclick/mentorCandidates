@@ -1,11 +1,17 @@
 package model;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Email;
 
 @Entity
@@ -25,6 +31,10 @@ public class Mentor {
 	@Email
 	private String email;
 
+	@OneToMany(mappedBy = "mentor")
+	@LazyCollection(LazyCollectionOption.FALSE)
+	private Collection<Opinion> opinions;
+
 	@Column
 	@Lob
 	private String description;
@@ -38,6 +48,12 @@ public class Mentor {
 		this.lastName = lastName;
 		this.email = email;
 		this.description = description;
+		this.opinions = new HashSet<>();
+	}
+
+	public void addOpinion(Opinion opinion) {
+		opinions.add(opinion);
+		opinion.setMentor(this);
 	}
 
 	public long getId() {
@@ -58,5 +74,9 @@ public class Mentor {
 
 	public String getDescription() {
 		return description;
+	}
+
+	public Collection<Opinion> getOpinions() {
+		return opinions;
 	}
 }

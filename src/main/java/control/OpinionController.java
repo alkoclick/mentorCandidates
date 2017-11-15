@@ -20,6 +20,8 @@ public class OpinionController {
 		Session session = SessionBuilder.getSessionFactory().openSession();
 		session.beginTransaction();
 		Opinion opinion = session.find(Opinion.class, idOpinion);
+		session.getTransaction().commit();
+		session.close();
 
 		return opinion != null ? ResponseEntity.ok(opinion) : ResponseEntity.notFound().build();
 	}
