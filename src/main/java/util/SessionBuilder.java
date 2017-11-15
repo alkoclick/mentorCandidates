@@ -17,7 +17,7 @@ public class SessionBuilder {
 
 	static {
 		// configures settings from hibernate.cfg.xml
-		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
+		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().build();
 		try {
 			sessionFactory = new MetadataSources(registry).addAnnotatedClass(Opinion.class)
 					.addAnnotatedClass(Mentor.class).buildMetadata().buildSessionFactory();
