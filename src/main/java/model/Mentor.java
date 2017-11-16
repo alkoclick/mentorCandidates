@@ -18,9 +18,6 @@ import org.hibernate.validator.constraints.Length;
 
 /**
  * A Mentor (POJO) is a worker responsible for providing opinions
- * 
- * @author Alex
- *
  */
 @Entity
 public class Mentor {
