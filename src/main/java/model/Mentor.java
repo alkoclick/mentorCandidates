@@ -9,11 +9,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
 
+/**
+ * A Mentor (POJO) is a worker responsible for providing opinions
+ * 
+ * @author Alex
+ *
+ */
 @Entity
 public class Mentor {
 
@@ -21,14 +29,20 @@ public class Mentor {
 	@GeneratedValue
 	private long id;
 
-	@Column(nullable = false)
+	@Column
+	@NotNull
+	@Length(max = 100)
 	private String firstName;
 
-	@Column(nullable = false)
+	@Column
+	@NotNull
+	@Length(max = 100)
 	private String lastName;
 
-	@Column(nullable = false)
+	@Column
 	@Email
+	@NotNull
+	@Length(max = 100)
 	private String email;
 
 	@OneToMany(mappedBy = "mentor")
