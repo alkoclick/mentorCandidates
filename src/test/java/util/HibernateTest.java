@@ -2,7 +2,6 @@ package util;
 
 import org.hibernate.Session;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 
 public class HibernateTest {
@@ -19,10 +18,5 @@ public class HibernateTest {
 	public void saveAndClose() {
 		session.getTransaction().commit();
 		session.close();
-	}
-
-	@AfterClass
-	public static void cleanUp() {
-
 	}
 }
