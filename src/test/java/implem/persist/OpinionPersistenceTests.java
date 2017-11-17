@@ -5,17 +5,14 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
-import org.hibernate.Session;
 import org.junit.Test;
 
 import model.Mentor;
 import model.Opinion;
-import unit.OpinionTest;
 import util.HibernateTest;
+import util.OpinionHelper;
 
 public class OpinionPersistenceTests extends HibernateTest {
 	private Opinion opinion = new Opinion("Student A", "This is an opinion created standalone");
@@ -39,8 +36,9 @@ public class OpinionPersistenceTests extends HibernateTest {
 	 */
 	@Test
 	public void retrieveAll() {
-		addOpinionBatch(session);
+		List<Opinion> opinions = OpinionHelper.addOpinionBatch(session);
 		assertEquals(session.createQuery("From Opinion o where o.name = \'Student B\'").list().size(), BATCH_SIZE);
+		OpinionHelper.deleteBatch(opinions, session);
 	}
 
 	/**
@@ -55,18 +53,8 @@ public class OpinionPersistenceTests extends HibernateTest {
 		session.save(mentor);
 
 		Opinion dbOpinion = session.find(Opinion.class, opinion.getId());
-		OpinionTest.testEquality(dbOpinion, opinion);
+		OpinionHelper.testEquality(dbOpinion, opinion);
 
 		opinion.setMentor(null);
-	}
-
-	public static List<Opinion> addOpinionBatch(Session session) {
-		List<Opinion> batch = new ArrayList<>();
-		IntStream.range(0, BATCH_SIZE).forEach(i -> {
-			Opinion currentOpinion = new Opinion("Student B", "B is for batch");
-			batch.add(currentOpinion);
-			session.save(currentOpinion);
-		});
-		return batch;
 	}
 }

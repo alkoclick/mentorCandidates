@@ -3,7 +3,9 @@ package implem.control;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
@@ -19,10 +21,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import control.OpinionController;
-import implem.persist.OpinionPersistenceTests;
 import model.Opinion;
-import unit.OpinionTest;
 import util.HibernateTest;
+import util.OpinionHelper;
 
 @Rollback
 public class OpinionControllerTest extends HibernateTest {
@@ -31,14 +32,16 @@ public class OpinionControllerTest extends HibernateTest {
 	private MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new OpinionController()).build();
 	private ObjectMapper mapper = new ObjectMapper();
 
-	// Get all
-	// Assert 200
-	// Assert Array
-	// Test behaviour when empty DB
+	/**
+	 * Adds a number of opinion records to the db, then tests the /opinions
+	 * endpoint, getting all opinions. The returned object should be a JSONArray
+	 * 
+	 * @throws Exception
+	 *             When performing the mockMVC request encountered an issue
+	 */
 	@Test
 	public void getAllRecords() throws Exception {
-		List<Opinion> opinions = OpinionPersistenceTests.addOpinionBatch(session);
-		session.getTransaction().commit();
+		List<Opinion> opinions = OpinionHelper.addOpinionBatch(session);
 
 		String response = this.mockMvc.perform(get(URI).accept(CONTENT_TYPE)).andExpect(status().isOk()).andReturn()
 				.getResponse().getContentAsString();
@@ -48,15 +51,19 @@ public class OpinionControllerTest extends HibernateTest {
 		assertNotEquals(responseOpinions.length(), 0);
 
 		for (int i = 0; i < responseOpinions.length(); ++i) {
-			OpinionTest.testEquality(mapper.readValue(responseOpinions.getJSONObject(i).toString(), Opinion.class),
+			OpinionHelper.testEquality(mapper.readValue(responseOpinions.getJSONObject(i).toString(), Opinion.class),
 					opinions.get(i));
 		}
 
-		session.beginTransaction();
-		opinions.forEach(op -> session.delete(op));
-		session.getTransaction().commit();
+		OpinionHelper.deleteBatch(opinions, session);
 	}
 
+	/**
+	 * Tests the /opinions endpoint's behaviour, when there are no records in the db
+	 * 
+	 * @throws Exception
+	 *             When performing the mockMVC request encountered an issue
+	 */
 	@Test
 	public void getAllRecordsEmpty() throws Exception {
 		createSchema();
@@ -68,9 +75,14 @@ public class OpinionControllerTest extends HibernateTest {
 		assertEquals(responseOpinions.length(), 0);
 	}
 
-	// Get existing single
-	// Record exists, assert 200 and required features
-	// Assert JSONObject
+	/**
+	 * 
+	 * Adds a record to the db, then tests the /opinion/id to retrieve it and assert
+	 * that insertion and retrieval result in the same object
+	 * 
+	 * @throws Exception
+	 *             When performing the mockMVC request encountered an issue
+	 */
 	@Test
 	public void getRecordTest() throws Exception {
 		Opinion opinion = new Opinion("Jay Controller", "Jay is an aspiring Java programmer");
@@ -83,10 +95,44 @@ public class OpinionControllerTest extends HibernateTest {
 		// JSON from String to Object
 		Opinion responseOpinion = mapper.readValue(response, Opinion.class);
 
-		OpinionTest.testEquality(opinion, responseOpinion);
+		OpinionHelper.testEquality(opinion, responseOpinion);
 	}
 
-	// Get nonexistent single
-	// Assert 404
+	/**
+	 * 
+	 * Tests the /opinion/id endpoint's behaviour, when the specified record does
+	 * not exist
+	 * 
+	 * @throws Exception
+	 *             When performing the mockMVC request encountered an issue
+	 */
+	@Test
+	public void getNonexistentRecordTest() throws Exception {
+		createSchema();
+		String response = this.mockMvc.perform(get(URI + "/" + 10).accept(CONTENT_TYPE))
+				.andExpect(status().isNotFound()).andReturn().getResponse().getContentAsString();
+		assertNotNull(response);
+		assertTrue(response.isEmpty());
+	}
 
+	@Test
+	public void postRecordTest() throws Exception {
+		createSchema();
+		Opinion opinion = new Opinion("Jay", "Excelsior");
+		String response = this.mockMvc
+				.perform(post(URI).content(mapper.writeValueAsString(opinion)).accept(CONTENT_TYPE))
+				.andExpect(status().is2xxSuccessful()).andReturn().getResponse().getContentAsString();
+
+		assertNotNull(new JSONObject(response));
+		assertNotEquals(response.length(), 0);
+
+		Opinion postOpinion = mapper.readValue(response, Opinion.class);
+		Opinion dbOpinion;
+		assertNotNull(dbOpinion = session.find(Opinion.class, postOpinion.getId()));
+		session.beginTransaction();
+
+		// Delete the opinion
+		session.delete(dbOpinion);
+		session.getTransaction().commit();
+	}
 }

@@ -41,22 +41,6 @@ public class OpinionTest extends ValidationTest {
 	}
 
 	/**
-	 * A helper method for ensuring two {@link model.Opinion} objects are identical
-	 * 
-	 * @param a
-	 *            The first {@link model.Opinion}
-	 * @param b
-	 *            The second {@link model.Opinion}
-	 */
-	public static void testEquality(Opinion a, Opinion b) {
-		// This will take care of checking ID
-		assertEquals(a, b);
-		assertEquals(a.getName(), b.getName());
-		assertEquals(a.getDescription(), b.getDescription());
-		assertEquals(a.getMentor(), b.getMentor());
-	}
-
-	/**
 	 * Ensure that the {@link javax.validation.constraints.NotNull} annotation
 	 * generates the proper runtime checks for hibernate
 	 * 
