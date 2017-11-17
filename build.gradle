@@ -32,4 +32,6 @@ dependencies {
     compile("mysql:mysql-connector-java:8.0.8-dmr")
     testCompile("junit:junit")
     testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.hsqldb:hsqldb:2.4.0')
+    testCompile('com.h2database:h2:1.4.196')
 }

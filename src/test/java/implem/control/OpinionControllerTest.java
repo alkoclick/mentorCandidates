@@ -44,8 +44,6 @@ public class OpinionControllerTest extends HibernateTest {
 		Opinion responseOpinion = mapper.readValue(response, Opinion.class);
 
 		OpinionTest.testEquality(opinion, responseOpinion);
-
-		session.delete(opinion);
 	}
 
 	// Get nonexistent single
