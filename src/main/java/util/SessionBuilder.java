@@ -16,7 +16,6 @@ public class SessionBuilder {
 	private static Logger logger = Logger.getLogger(SessionBuilder.class.getName());
 
 	static {
-		// configures settings from hibernate.cfg.xml
 		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().build();
 		try {
 			sessionFactory = new MetadataSources(registry).addAnnotatedClass(Opinion.class)

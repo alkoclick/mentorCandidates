@@ -16,7 +16,7 @@ public class HibernateTest {
 
 	@After
 	public void saveAndClose() {
-		session.getTransaction().commit();
+		session.getTransaction().rollback();
 		session.close();
 	}
 }

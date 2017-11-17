@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import model.Mentor;
 import model.Opinion;
+import unit.OpinionTest;
 import util.HibernateTest;
 
 public class OpinionPersistenceTests extends HibernateTest {
@@ -53,10 +54,7 @@ public class OpinionPersistenceTests extends HibernateTest {
 		session.save(mentor);
 
 		Opinion dbOpinion = session.find(Opinion.class, opinion.getId());
-		assertEquals(dbOpinion, opinion);
-		assertEquals(dbOpinion.getName(), opinion.getName());
-		assertEquals(dbOpinion.getDescription(), opinion.getDescription());
-		assertEquals(dbOpinion.getMentor(), opinion.getMentor());
+		OpinionTest.testEquality(dbOpinion, opinion);
 
 		opinion.setMentor(null);
 	}

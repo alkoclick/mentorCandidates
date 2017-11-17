@@ -1,11 +1,12 @@
 package control;
 
 import org.hibernate.Session;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import model.Opinion;
 import util.SessionBuilder;
@@ -13,13 +14,14 @@ import util.SessionBuilder;
 @Controller
 public class OpinionController {
 
-	private static final String URI = "/opinion";
+	public static final String URI = "/opinion";
 
-	@RequestMapping(method = RequestMethod.GET, value = { URI })
-	ResponseEntity<?> getOpinion(@RequestParam(value = "id", defaultValue = "-1") long idOpinion) {
+	@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.GET, value = {
+			URI + "/{id}" })
+	ResponseEntity<?> getOpinion(@PathVariable(value = "id", required = false) Long id) {
 		Session session = SessionBuilder.getSessionFactory().openSession();
 		session.beginTransaction();
-		Opinion opinion = session.find(Opinion.class, idOpinion);
+		Opinion opinion = session.find(Opinion.class, id);
 		session.getTransaction().commit();
 		session.close();
 
