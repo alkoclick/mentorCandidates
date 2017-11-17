@@ -95,4 +95,9 @@ public class Opinion {
 		return mentor;
 	}
 
+	@Override
+	public String toString() {
+		return "Opinion [id=" + id + ", name=" + name + ", mentor=" + mentor + ", description=" + description + "]";
+	}
+
 }

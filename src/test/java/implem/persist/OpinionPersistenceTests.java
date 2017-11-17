@@ -5,8 +5,11 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 
+import org.hibernate.Session;
 import org.junit.Test;
 
 import model.Mentor;
@@ -17,6 +20,7 @@ import util.HibernateTest;
 public class OpinionPersistenceTests extends HibernateTest {
 	private Opinion opinion = new Opinion("Student A", "This is an opinion created standalone");
 	private Mentor mentor = new Mentor("Alex", "Pap", "alexPap@gmail.com", "AlexPap is a Java mentor");
+	public static int BATCH_SIZE = 20;
 
 	/**
 	 * Tests to ensure that a record can be written to the database and a proper ID
@@ -35,11 +39,8 @@ public class OpinionPersistenceTests extends HibernateTest {
 	 */
 	@Test
 	public void retrieveAll() {
-		int batchSize = 20;
-		IntStream.range(0, batchSize).forEach(i -> {
-			session.save(new Opinion("Student B", "B is for batch"));
-		});
-		assertEquals(session.createQuery("From Opinion o where o.name = \'Student B\'").list().size(), batchSize);
+		addOpinionBatch(session);
+		assertEquals(session.createQuery("From Opinion o where o.name = \'Student B\'").list().size(), BATCH_SIZE);
 	}
 
 	/**
@@ -57,5 +58,15 @@ public class OpinionPersistenceTests extends HibernateTest {
 		OpinionTest.testEquality(dbOpinion, opinion);
 
 		opinion.setMentor(null);
+	}
+
+	public static List<Opinion> addOpinionBatch(Session session) {
+		List<Opinion> batch = new ArrayList<>();
+		IntStream.range(0, BATCH_SIZE).forEach(i -> {
+			Opinion currentOpinion = new Opinion("Student B", "B is for batch");
+			batch.add(currentOpinion);
+			session.save(currentOpinion);
+		});
+		return batch;
 	}
 }

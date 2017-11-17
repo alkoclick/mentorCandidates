@@ -1,5 +1,7 @@
 package control;
 
+import java.util.Collection;
+
 import org.hibernate.Session;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,7 @@ public class OpinionController {
 
 	@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.GET, value = {
 			URI + "/{id}" })
-	ResponseEntity<?> getOpinion(@PathVariable(value = "id", required = false) Long id) {
+	ResponseEntity<?> getOpinion(@PathVariable(value = "id") Long id) {
 		Session session = SessionBuilder.getSessionFactory().openSession();
 		session.beginTransaction();
 		Opinion opinion = session.find(Opinion.class, id);
@@ -26,5 +28,18 @@ public class OpinionController {
 		session.close();
 
 		return opinion != null ? ResponseEntity.ok(opinion) : ResponseEntity.notFound().build();
+	}
+
+	@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.GET, value = URI)
+	ResponseEntity<?> getOpinions() {
+		Session session = SessionBuilder.getSessionFactory().openSession();
+		session.beginTransaction();
+
+		Collection<?> results = results = session
+				.createNativeQuery("select * from " + Opinion.class.getSimpleName() + ";", Opinion.class)
+				.getResultList();
+		session.getTransaction().commit();
+		session.close();
+		return results != null ? ResponseEntity.ok(results) : ResponseEntity.notFound().build();
 	}
 }
