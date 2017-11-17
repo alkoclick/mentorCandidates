@@ -11,8 +11,9 @@ import org.junit.Test;
 
 import model.Mentor;
 import model.Opinion;
+import util.HibernateTest;
 
-public class OpinionPersistenceTests extends PersistenceTests {
+public class OpinionPersistenceTests extends HibernateTest {
 	private Opinion opinion = new Opinion("Student A", "This is an opinion created standalone");
 	private Mentor mentor = new Mentor("Alex", "Pap", "alexPap@gmail.com", "AlexPap is a Java mentor");
 
@@ -29,7 +30,7 @@ public class OpinionPersistenceTests extends PersistenceTests {
 	}
 
 	/**
-	 * Batch inserts a number of items to the db and then pulls the total amount
+	 * Batch inserts a number of records to the db and then pulls the total amount
 	 */
 	@Test
 	public void retrieveAll() {
