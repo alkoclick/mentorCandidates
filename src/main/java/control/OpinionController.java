@@ -9,10 +9,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import model.Opinion;
+import service.OpinionService;
 
 @Controller
 public class OpinionController extends control.Controller<Opinion> {
 	public static final String URI = "/opinion";
+
+	public OpinionController() {
+		service = new OpinionService();
+	}
 
 	/**
 	 * The endpoint for get requests

@@ -6,8 +6,6 @@ import org.hibernate.Session;
 import org.junit.After;
 import org.junit.Before;
 
-import model.Opinion;
-
 @Transactional
 public class HibernateTest {
 
@@ -22,14 +20,5 @@ public class HibernateTest {
 	@After
 	public void saveAndClose() {
 		session.close();
-	}
-
-	protected void createSchema() {
-		Opinion opinion = new Opinion("a", "b");
-		session.save(opinion);
-		session.getTransaction().commit();
-		session.beginTransaction();
-		session.delete(opinion);
-		session.getTransaction().commit();
 	}
 }

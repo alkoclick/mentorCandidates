@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import control.OpinionController;
 import model.Opinion;
+import service.OpinionService;
 import util.HibernateTest;
 import util.OpinionHelper;
 
@@ -31,6 +32,7 @@ public class OpinionControllerTest extends HibernateTest {
 	public static final MediaType CONTENT_TYPE = MediaType.APPLICATION_JSON_UTF8;
 	private MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new OpinionController()).build();
 	private ObjectMapper mapper = new ObjectMapper();
+	private OpinionService service = new OpinionService();
 
 	/**
 	 * Adds a number of opinion records to the db, then tests the /opinions
@@ -66,7 +68,6 @@ public class OpinionControllerTest extends HibernateTest {
 	 */
 	@Test
 	public void getAllRecordsEmpty() throws Exception {
-		createSchema();
 		String response = this.mockMvc.perform(get(URI).accept(CONTENT_TYPE)).andExpect(status().isOk()).andReturn()
 				.getResponse().getContentAsString();
 
@@ -108,7 +109,6 @@ public class OpinionControllerTest extends HibernateTest {
 	 */
 	@Test
 	public void getNonexistentRecordTest() throws Exception {
-		createSchema();
 		String response = this.mockMvc.perform(get(URI + "/" + 10).accept(CONTENT_TYPE))
 				.andExpect(status().isNotFound()).andReturn().getResponse().getContentAsString();
 		assertNotNull(response);
@@ -117,7 +117,6 @@ public class OpinionControllerTest extends HibernateTest {
 
 	@Test
 	public void postRecordTest() throws Exception {
-		createSchema();
 		Opinion opinion = new Opinion("Jay", "Excelsior");
 		String response = this.mockMvc
 				.perform(post(URI).content(mapper.writeValueAsString(opinion)).accept(CONTENT_TYPE))
@@ -128,11 +127,8 @@ public class OpinionControllerTest extends HibernateTest {
 
 		Opinion postOpinion = mapper.readValue(response, Opinion.class);
 		Opinion dbOpinion;
-		assertNotNull(dbOpinion = session.find(Opinion.class, postOpinion.getId()));
-		session.beginTransaction();
+		assertNotNull(dbOpinion = service.getById(postOpinion.getId()));
 
-		// Delete the opinion
-		session.delete(dbOpinion);
-		session.getTransaction().commit();
+		service.delete(dbOpinion);
 	}
 }
