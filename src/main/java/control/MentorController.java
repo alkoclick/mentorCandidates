@@ -21,9 +21,18 @@ public class MentorController extends control.Controller<Mentor> {
 	public static final String URI = "/mentor";
 
 	/**
+	 * The mapper for GET requests in the /mentor/{id} endpoint.
+	 * 
+	 * Full documentation available in the markdown file:
+	 * docs/api/endpoints/mentors.md
 	 * 
 	 * @param id
-	 * @return
+	 *            Optional, the id of the record to return
+	 * @return {@link ResponseEntity}, containing: A JSONArray, if no id was
+	 *         specified, or a JSONObject if the id was specified and found in the
+	 *         db. In any other case, it will be wrapping the appropriate error
+	 *         code.
+	 * @see docs/api/entities/mentor.md
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = { URI, URI + "/{id}" })
 	ResponseEntity<?> getMentor(@PathVariable(value = "id", required = false) Long id) {
@@ -31,10 +40,17 @@ public class MentorController extends control.Controller<Mentor> {
 	}
 
 	/**
-	 * The endpoint for post requests
+	 * The mapper for POST requests in the /mentor endpoint.
+	 * 
+	 * Full documentation available in the markdown file:
+	 * docs/api/endpoints/mentors.md
 	 * 
 	 * @param body
-	 * @return
+	 *            An {@link mentor} object, in JSON
+	 * @return {@link ResponseEntity} containing a JSONObject if the insertion in
+	 *         the db was successful. In any other case, it will be wrapping the
+	 *         appropriate error code.
+	 * @see docs/api/entities/mentor.md
 	 */
 	@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.POST, value = { URI })
 	ResponseEntity<?> postMentor(@RequestBody(required = true) String body) {

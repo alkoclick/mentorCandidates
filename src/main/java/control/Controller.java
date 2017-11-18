@@ -3,6 +3,7 @@ package control;
 import java.io.IOException;
 import java.util.Collection;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,12 +17,16 @@ public class Controller<K> {
 	protected EntityService<K> service;
 
 	/**
+	 * Will return one, or all of the records in the data
 	 * 
 	 * @param objClass
-	 *            The class to look for in the db
+	 *            The class of the requested record(s)
 	 * @param id
-	 * 
-	 * @return
+	 *            Optional, the id of a record to return
+	 * @return A {@link ResponseEntity} containing: If the id is null, JSONArray of
+	 *         all the records in the db. If the id was specified and exists, the
+	 *         record matching it. Otherwise the ResponseEntity wraps the
+	 *         appropriate error code.
 	 */
 	protected ResponseEntity<?> getResponseEntity(Class<K> objClass, Long id) {
 		if (id != null) {
@@ -33,6 +38,17 @@ public class Controller<K> {
 		}
 	}
 
+	/**
+	 * Attempts to insert the given body in the db, after unmarshalling it to a POJO
+	 * 
+	 * @param objClass
+	 *            The class of the given object
+	 * @param body
+	 *            A POJO, in JSON form
+	 * @return {@link ResponseEntity} If insertion was successful, the inserted
+	 *         record is returned. Otherwise the ResponseEntity wraps the
+	 *         appropriate error code.
+	 */
 	protected ResponseEntity<?> postResponseEntity(Class<K> objClass, String body) {
 		if (body == null || body.isEmpty() || body.equals("{}"))
 			return ResponseEntity.badRequest().body(HTTP_EMPTYREQUEST);
@@ -40,7 +56,7 @@ public class Controller<K> {
 		try {
 			K obj = mapper.readValue(body, objClass);
 			service.add(obj);
-			return ResponseEntity.ok(obj);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(obj);
 		} catch (IOException e) {
 			return ResponseEntity.badRequest().body(HTTP_BADREQUEST);
 		}

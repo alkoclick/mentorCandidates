@@ -20,11 +20,18 @@ public class OpinionController extends control.Controller<Opinion> {
 	}
 
 	/**
-	 * The endpoint for get requests
+	 * The mapper for GET requests in the /opinion/{id} endpoint.
+	 * 
+	 * Full documentation available in the markdown file:
+	 * docs/api/endpoints/opinions.md
 	 * 
 	 * @param id
 	 *            Optional, the id of the record to return
-	 * @return
+	 * @return {@link ResponseEntity}, containing: A JSONArray, if no id was
+	 *         specified, or a JSONObject if the id was specified and found in the
+	 *         db. In any other case, it will be wrapping the appropriate error
+	 *         code.
+	 * @see docs/api/entities/opinion.md
 	 */
 	@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.GET, value = { URI,
 			URI + "/{id}" })
@@ -33,10 +40,17 @@ public class OpinionController extends control.Controller<Opinion> {
 	}
 
 	/**
-	 * The endpoint for post requests
+	 * The mapper for POST requests in the /opinion endpoint.
+	 * 
+	 * Full documentation available in the markdown file:
+	 * docs/api/endpoints/opinions.md
 	 * 
 	 * @param body
-	 * @return
+	 *            An {@link Opinion} object, in JSON
+	 * @return {@link ResponseEntity} containing a JSONObject if the insertion in
+	 *         the db was successful. In any other case, it will be wrapping the
+	 *         appropriate error code.
+	 * @see docs/api/entities/opinion.md
 	 */
 	@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.POST, value = { URI })
 	ResponseEntity<?> postOpinion(@RequestBody(required = true) String body) {
