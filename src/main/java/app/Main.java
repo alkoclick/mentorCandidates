@@ -2,16 +2,12 @@ package app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.Import;
 
-import control.Controller;
-import dao.DAO;
-import model.Model;
-import service.EntityService;
-import util.AppConfig;
+import util.TestConfig;
 
-@SpringBootApplication(scanBasePackageClasses = { Controller.class, DAO.class, EntityService.class, AppConfig.class })
-@EntityScan(basePackageClasses = Model.class)
+@SpringBootApplication
+@Import(value = TestConfig.class)
 public class Main {
 
 	public static void main(String[] args) {

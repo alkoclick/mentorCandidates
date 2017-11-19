@@ -9,30 +9,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.springframework.http.MediaType;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import control.OpinionController;
 import model.Opinion;
-import service.OpinionService;
-import util.HibernateTest;
 import util.OpinionHelper;
 
-@Rollback
-public class OpinionControllerTest extends HibernateTest {
+public class OpinionControllerTest extends ControllerTest<Opinion> {
 	private static final String URI = OpinionController.URI;
-	public static final MediaType CONTENT_TYPE = MediaType.APPLICATION_JSON_UTF8;
-	private MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new OpinionController()).build();
-	private ObjectMapper mapper = new ObjectMapper();
-	private OpinionService service = new OpinionService();
 
 	/**
 	 * Adds a number of opinion records to the db, then tests the /opinions
@@ -43,7 +32,11 @@ public class OpinionControllerTest extends HibernateTest {
 	 */
 	@Test
 	public void getAllRecords() throws Exception {
-		List<Opinion> opinions = OpinionHelper.addOpinionBatch(session);
+		List<Opinion> opinions = IntStream.range(0, BATCH_SIZE).mapToObj(i -> {
+			Opinion currentOpinion = new Opinion("Student B", "B is for batch");
+			service.add(currentOpinion);
+			return currentOpinion;
+		}).collect(Collectors.toList());
 
 		String response = this.mockMvc.perform(get(URI).accept(CONTENT_TYPE)).andExpect(status().isOk()).andReturn()
 				.getResponse().getContentAsString();
@@ -57,7 +50,7 @@ public class OpinionControllerTest extends HibernateTest {
 					opinions.get(i));
 		}
 
-		OpinionHelper.deleteBatch(opinions, session);
+		opinions.forEach(op -> service.delete(op));
 	}
 
 	/**
@@ -87,8 +80,7 @@ public class OpinionControllerTest extends HibernateTest {
 	@Test
 	public void getRecordTest() throws Exception {
 		Opinion opinion = new Opinion("Jay Controller", "Jay is an aspiring Java programmer");
-		session.save(opinion);
-		session.getTransaction().commit();
+		service.save(opinion);
 
 		String response = this.mockMvc.perform(get(URI + "/" + opinion.getId()).accept(CONTENT_TYPE))
 				.andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
@@ -118,6 +110,7 @@ public class OpinionControllerTest extends HibernateTest {
 	@Test
 	public void postRecordTest() throws Exception {
 		Opinion opinion = new Opinion("Jay", "Excelsior");
+		assertTrue(this.mockMvc != null);
 		String response = this.mockMvc
 				.perform(post(URI).content(mapper.writeValueAsString(opinion)).accept(CONTENT_TYPE))
 				.andExpect(status().is2xxSuccessful()).andReturn().getResponse().getContentAsString();

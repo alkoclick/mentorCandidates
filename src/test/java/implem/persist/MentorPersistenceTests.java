@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.Serializable;
 import java.util.stream.IntStream;
 
 import org.junit.Test;
@@ -13,7 +12,7 @@ import model.Mentor;
 import model.Opinion;
 import util.HibernateTest;
 
-public class MentorPersistenceTests extends HibernateTest {
+public class MentorPersistenceTests extends HibernateTest<Mentor> {
 	private Opinion opinion = new Opinion("Student A", "This is an opinion created standalone");
 	private Mentor mentor = new Mentor("Alex", "Pap", "alexPap@gmail.com", "AlexPap is a Java mentor");
 
@@ -23,10 +22,9 @@ public class MentorPersistenceTests extends HibernateTest {
 	 */
 	@Test
 	public void addToDb() {
-		Serializable id = session.save(mentor);
-		assertNotEquals(id, 0);
-		assertEquals(id, mentor.getId());
-		assertTrue(session.contains(mentor));
+		service.add(mentor);
+		assertNotEquals(mentor.getId(), 0);
+		assertTrue(service.exists(mentor.getId()));
 	}
 
 	/**
@@ -36,9 +34,9 @@ public class MentorPersistenceTests extends HibernateTest {
 	public void retrieveAll() {
 		int batchSize = 20;
 		IntStream.range(0, batchSize).forEach(i -> {
-			session.save(new Mentor("Batch", "User", "batch@spam.com", "This is a batch user"));
+			service.add(new Mentor("Batch", "User", "batch@spam.com", "This is a batch user"));
 		});
-		assertEquals(session.createQuery("From Mentor o where o.email = \'batch@spam.com\'").list().size(), batchSize);
+		assertEquals(service.getAll(), batchSize);
 	}
 
 	/**
@@ -49,10 +47,10 @@ public class MentorPersistenceTests extends HibernateTest {
 	public void retrieveById() {
 		mentor.getOpinions().clear();
 		mentor.getOpinions().add(opinion);
-		session.save(mentor);
-		session.save(opinion);
+		service.add(mentor);
+		// service.add(opinion);
 
-		Mentor dbmentor = session.find(Mentor.class, mentor.getId());
+		Mentor dbmentor = service.getById(mentor.getId());
 		assertEquals(dbmentor, mentor);
 		assertEquals(dbmentor.getFirstName(), mentor.getFirstName());
 		assertEquals(dbmentor.getLastName(), mentor.getLastName());

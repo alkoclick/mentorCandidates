@@ -6,22 +6,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.json.JSONObject;
 import org.junit.Test;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import control.MentorController;
 import model.Mentor;
-import util.HibernateTest;
 import util.MentorHelper;
 
-public class MentorControllerTest extends HibernateTest {
+public class MentorControllerTest extends ControllerTest<Mentor> {
 	private static final String URI = MentorController.URI;
-	public static final MediaType CONTENT_TYPE = MediaType.APPLICATION_JSON_UTF8;
 	private MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new MentorController()).build();
-	private ObjectMapper mapper = new ObjectMapper();
 
 	/**
 	 * 
@@ -34,8 +28,7 @@ public class MentorControllerTest extends HibernateTest {
 	@Test
 	public void getRecordTest() throws Exception {
 		Mentor mentor = new Mentor("Alex", "Pap", "a@b.com", "Alex is a Java mentor");
-		session.save(mentor);
-		session.getTransaction().commit();
+		service.add(mentor);
 
 		String response = this.mockMvc.perform(get(URI + "/" + mentor.getId()).accept(CONTENT_TYPE))
 				.andExpect(status().isOk()).andReturn().getResponse().getContentAsString();

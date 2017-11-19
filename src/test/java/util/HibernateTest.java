@@ -2,23 +2,35 @@ package util;
 
 import javax.transaction.Transactional;
 
-import org.hibernate.Session;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.web.context.WebApplicationContext;
 
+import service.ModelService;
+
+@RunWith(SpringRunner.class)
 @Transactional
-public class HibernateTest {
+@SpringBootTest(classes = TestConfig.class)
+@ContextConfiguration
+@WebAppConfiguration
+public class HibernateTest<T> {
+	protected static int BATCH_SIZE = 20;
 
-	protected Session session;
+	@Autowired
+	protected WebApplicationContext context;
 
-	@Before
-	public void obtainSession() {
-		session = SessionBuilder.getSessionFactory().openSession();
-		session.beginTransaction();
+	@Autowired
+	protected ModelService<T> service;
+
+	public ModelService<T> getService() {
+		return service;
 	}
 
-	@After
-	public void saveAndClose() {
-		session.close();
+	public void setService(ModelService<T> service) {
+		this.service = service;
 	}
 }

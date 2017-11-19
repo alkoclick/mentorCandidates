@@ -7,27 +7,27 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 import implem.persist.OpinionPersistenceTests;
 import model.Opinion;
 
 public class OpinionHelper {
 
-	public static void deleteBatch(Collection<?> toDelete, Session session) {
-		session.beginTransaction();
-		toDelete.forEach(op -> session.delete(op));
-		session.getTransaction().commit();
+	public static void deleteBatch(Collection<?> toDelete, EntityManager em) {
+		em.getTransaction().begin();
+		toDelete.forEach(op -> em.remove(op));
+		em.getTransaction().commit();
 	}
 
-	public static List<Opinion> addOpinionBatch(Session session) {
+	public static List<Opinion> addOpinionBatch(EntityManager em) {
 		List<Opinion> batch = new ArrayList<>();
 		IntStream.range(0, OpinionPersistenceTests.BATCH_SIZE).forEach(i -> {
 			Opinion currentOpinion = new Opinion("Student B", "B is for batch");
 			batch.add(currentOpinion);
-			session.save(currentOpinion);
+			em.persist(currentOpinion);
 		});
-		session.getTransaction().commit();
+		em.getTransaction().commit();
 		return batch;
 	}
 
