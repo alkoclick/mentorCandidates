@@ -6,8 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.json.JSONObject;
 import org.junit.Test;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import control.MentorController;
 import model.Mentor;
@@ -15,7 +13,6 @@ import util.MentorHelper;
 
 public class MentorControllerTest extends ControllerTest<Mentor> {
 	private static final String URI = MentorController.URI;
-	private MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new MentorController()).build();
 
 	/**
 	 * 
