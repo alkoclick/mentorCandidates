@@ -2,7 +2,9 @@ package service;
 
 import java.util.Collection;
 
-public interface EntityService<T> {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface EntityService<T> extends JpaRepository<T, Long> {
 
 	public void add(T t);
 

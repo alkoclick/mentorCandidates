@@ -3,18 +3,21 @@ package control;
 import java.io.IOException;
 import java.util.Collection;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import service.EntityService;
+import service.ModelService;
 
-public class Controller<K> {
+public abstract class Controller<K> {
 	private static final Object HTTP_EMPTYREQUEST = "Empty";
 	private static final Object HTTP_BADREQUEST = "Bad";
 	ObjectMapper mapper = new ObjectMapper();
-	protected EntityService<K> service;
+
+	@Autowired
+	protected ModelService<K> service;
 
 	/**
 	 * Will return one, or all of the records in the data
@@ -61,5 +64,13 @@ public class Controller<K> {
 			return ResponseEntity.badRequest().body(HTTP_BADREQUEST);
 		}
 
+	}
+
+	public ModelService<K> getService() {
+		return service;
+	}
+
+	public void setService(ModelService<K> service) {
+		this.service = service;
 	}
 }

@@ -2,7 +2,9 @@ package dao;
 
 import java.util.Collection;
 
-public interface DAO<T> {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface DAO<T> extends JpaRepository<T, Long> {
 
 	public void add(T t);
 

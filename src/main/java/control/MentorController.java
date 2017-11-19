@@ -9,14 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import model.Mentor;
-import service.MentorService;
 
 @Controller
 public class MentorController extends control.Controller<Mentor> {
-
-	public MentorController() {
-		service = new MentorService();
-	}
 
 	public static final String URI = "/mentor";
 
