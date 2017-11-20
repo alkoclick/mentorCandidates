@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path="src/test/resources"/>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/test/java"/>
-	<classpathentry kind="src" path="src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8/"/>
 	<classpathentry kind="lib" path="C:/Users/Alex/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-web/1.5.8.RELEASE/7e0dc79e3b47be4539ad3c033639133ae6b7a17e/spring-boot-starter-web-1.5.8.RELEASE.jar" sourcepath="C:/Users/Alex/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-web/1.5.8.RELEASE/c5fd51945ab18b6226a198e5a48b09e30404ee6e/spring-boot-starter-web-1.5.8.RELEASE-sources.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Alex/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-jetty/1.5.8.RELEASE/580345e9e989cd9abd8038bf928daa98b932cb50/spring-boot-starter-jetty-1.5.8.RELEASE.jar" sourcepath="C:/Users/Alex/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-jetty/1.5.8.RELEASE/f9181af835d6339ed94f5c74c674ee58b198b63b/spring-boot-starter-jetty-1.5.8.RELEASE-sources.jar"/>
