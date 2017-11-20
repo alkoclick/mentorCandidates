@@ -1,18 +1,21 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'docker'
 
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE")
+        classpath 'se.transmode.gradle:gradle-docker:1.2'
     }
 }
 
 jar {
-    baseName = 'mentorCandidates'
+    baseName = 'mentors'
     version =  '1.0.0'
 }
 
@@ -27,14 +30,43 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
-    compile("org.springframework.boot:spring-boot-starter-jetty")    
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile("org.springframework.boot:spring-boot-starter-jetty")
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.hibernate:hibernate-core')
+
     compile('mysql:mysql-connector-java:8.0.8-dmr')
+    compile('org.hsqldb:hsqldb:2.4.0')
+    compile('com.h2database:h2:1.4.196')
+        
+    testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('junit:junit')
+}
 
-    testCompile('org.hsqldb:hsqldb:2.4.0')
-    testCompile('com.h2database:h2:1.4.196')
 
+task buildDockerData(type: Docker, dependsOn: build) {
+  push = false
+  applicationName = "${jar.baseName}-data"
+  dockerfile = file('src/main/docker/data/Dockerfile')
+}
+
+task buildDockerMySql(type: Docker, dependsOn: buildDockerData) {
+  push = false
+  applicationName = "${jar.baseName}-mysql"
+  dockerfile = file('src/main/docker/mysql/Dockerfile')
+}
+
+task buildDocker(type: Docker, dependsOn: buildDockerMySql) {
+  push = false
+  applicationName = "${jar.baseName}-web"
+  dockerfile = file('src/main/docker/web/Dockerfile')
+  doFirst {
+    copy {
+      from jar
+      into stageDir
+    }
+  }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.3.1'
 }

@@ -1,0 +1,25 @@
+version: "3.1"
+
+services:
+  mysql:
+    container_name: mysql  
+    image: mentors-mysql
+    restart: always
+    expose:
+        - 3306    
+    ports:
+        - 3306:3306
+
+  web:
+    container_name: web
+    image: mentors-web
+    restart: always
+    expose:
+        - 8080
+    ports:
+        - 8080:8080
+
+  data:
+    container_name: data
+    image: mentors-data
+    restart: always
