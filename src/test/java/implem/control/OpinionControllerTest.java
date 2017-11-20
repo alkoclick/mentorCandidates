@@ -1,6 +1,5 @@
 package implem.control;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -15,6 +14,7 @@ import java.util.stream.IntStream;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import control.OpinionController;
@@ -22,7 +22,11 @@ import model.Opinion;
 import util.OpinionHelper;
 
 public class OpinionControllerTest extends ControllerTest<Opinion> {
-	private static final String URI = OpinionController.URI;
+
+	@BeforeClass
+	public static void setURI() {
+		URI = OpinionController.URI;
+	}
 
 	@Before
 	@Override
@@ -39,11 +43,8 @@ public class OpinionControllerTest extends ControllerTest<Opinion> {
 	 */
 	@Test
 	public void getAllRecords() throws Exception {
-		List<Opinion> opinions = IntStream.range(0, BATCH_SIZE).mapToObj(i -> {
-			Opinion currentOpinion = new Opinion("Student B", "B is for batch");
-			service.save(currentOpinion);
-			return currentOpinion;
-		}).collect(Collectors.toList());
+		List<Opinion> opinions = service.save(IntStream.range(0, BATCH_SIZE)
+				.mapToObj(i -> new Opinion("Student B", "B is for batch")).collect(Collectors.toList()));
 
 		String response = this.mockMvc.perform(get(URI).accept(CONTENT_TYPE)).andExpect(status().isOk()).andReturn()
 				.getResponse().getContentAsString();
@@ -57,23 +58,7 @@ public class OpinionControllerTest extends ControllerTest<Opinion> {
 					opinions.get(i));
 		}
 
-		opinions.forEach(op -> service.delete(op));
-	}
-
-	/**
-	 * Tests the /opinions endpoint's behaviour, when there are no records in the db
-	 * 
-	 * @throws Exception
-	 *             When performing the mockMVC request encountered an issue
-	 */
-	@Test
-	public void getAllRecordsEmpty() throws Exception {
-		String response = this.mockMvc.perform(get(URI).accept(CONTENT_TYPE)).andExpect(status().isOk()).andReturn()
-				.getResponse().getContentAsString();
-
-		JSONArray responseOpinions = new JSONArray(response);
-		assertNotNull(responseOpinions);
-		assertEquals(responseOpinions.length(), 0);
+		service.delete(opinions);
 	}
 
 	/**
@@ -98,22 +83,6 @@ public class OpinionControllerTest extends ControllerTest<Opinion> {
 		OpinionHelper.testEquality(opinion, responseOpinion);
 	}
 
-	/**
-	 * 
-	 * Tests the /opinion/id endpoint's behaviour, when the specified record does
-	 * not exist
-	 * 
-	 * @throws Exception
-	 *             When performing the mockMVC request encountered an issue
-	 */
-	@Test
-	public void getNonexistentRecordTest() throws Exception {
-		String response = this.mockMvc.perform(get(URI + "/" + 10).accept(CONTENT_TYPE))
-				.andExpect(status().isNotFound()).andReturn().getResponse().getContentAsString();
-		assertNotNull(response);
-		assertTrue(response.isEmpty());
-	}
-
 	@Test
 	public void postRecordTest() throws Exception {
 		Opinion opinion = new Opinion("Jay", "Excelsior");
@@ -126,7 +95,6 @@ public class OpinionControllerTest extends ControllerTest<Opinion> {
 		assertNotEquals(response.length(), 0);
 
 		Opinion postOpinion = mapper.readValue(response, Opinion.class);
-		System.out.println(service.count());
 		Opinion dbOpinion;
 		assertNotNull(dbOpinion = service.findOne(postOpinion.getId()));
 

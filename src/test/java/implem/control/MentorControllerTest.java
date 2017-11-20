@@ -1,11 +1,20 @@
 package implem.control;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import control.MentorController;
@@ -13,7 +22,11 @@ import model.Mentor;
 import util.MentorHelper;
 
 public class MentorControllerTest extends ControllerTest<Mentor> {
-	private static final String URI = MentorController.URI;
+
+	@BeforeClass
+	public static void setURI() {
+		URI = MentorController.URI;
+	}
 
 	@Before
 	@Override
@@ -41,5 +54,50 @@ public class MentorControllerTest extends ControllerTest<Mentor> {
 		Mentor responseOpinion = mapper.readValue(response, Mentor.class);
 
 		MentorHelper.testEquality(mentor, responseOpinion);
+	}
+
+	/**
+	 * Adds a number of opinion records to the db, then tests the /opinions
+	 * endpoint, getting all opinions. The returned object should be a JSONArray
+	 * 
+	 * @throws Exception
+	 *             When performing the mockMVC request encountered an issue
+	 */
+	@Test
+	public void getAllRecords() throws Exception {
+		List<Mentor> mentors = service.save(IntStream.range(0, BATCH_SIZE)
+				.mapToObj(i -> new Mentor("a", "b", "a@b.com", "Batch mentor")).collect(Collectors.toList()));
+
+		String response = this.mockMvc.perform(get(URI).accept(CONTENT_TYPE)).andExpect(status().isOk()).andReturn()
+				.getResponse().getContentAsString();
+
+		JSONArray responseMentors = new JSONArray(response);
+		assertNotNull(responseMentors);
+		assertNotEquals(responseMentors.length(), 0);
+
+		for (int i = 0; i < responseMentors.length(); ++i) {
+			MentorHelper.testEquality(mapper.readValue(responseMentors.getJSONObject(i).toString(), Mentor.class),
+					mentors.get(i));
+		}
+
+		service.delete(mentors);
+	}
+
+	@Test
+	public void postRecordTest() throws Exception {
+		Mentor mentor = new Mentor("Stan", "Lee", "stan@marvel.com", "Excelsior");
+		assertTrue(this.mockMvc != null);
+		String response = this.mockMvc
+				.perform(post(URI).content(mapper.writeValueAsString(mentor)).accept(CONTENT_TYPE))
+				.andExpect(status().is2xxSuccessful()).andReturn().getResponse().getContentAsString();
+
+		assertNotNull(new JSONObject(response));
+		assertNotEquals(response.length(), 0);
+
+		Mentor postMentor = mapper.readValue(response, Mentor.class);
+		Mentor dbOpinion;
+		assertNotNull(dbOpinion = service.findOne(postMentor.getId()));
+
+		service.delete(dbOpinion);
 	}
 }
