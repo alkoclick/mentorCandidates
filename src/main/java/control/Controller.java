@@ -3,6 +3,8 @@ package control;
 import java.io.IOException;
 import java.util.Collection;
 
+import javax.persistence.PersistenceException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -58,7 +60,7 @@ public abstract class Controller<K> {
 			K obj = mapper.readValue(body, objClass);
 			obj = service.save(obj);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(obj);
-		} catch (IOException e) {
+		} catch (IOException | PersistenceException e) {
 			return ResponseEntity.badRequest().body(HTTP_BADREQUEST);
 		}
 

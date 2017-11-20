@@ -2,6 +2,7 @@ package service;
 
 import java.util.List;
 
+import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,7 +98,7 @@ public class ModelService<T> implements JpaRepository<T, Long> {
 	}
 
 	@Override
-	public <S extends T> S save(S entity) {
+	public <S extends T> S save(S entity) throws PersistenceException {
 		return modelDAO.save(entity);
 	}
 

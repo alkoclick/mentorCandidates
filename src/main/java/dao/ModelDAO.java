@@ -6,6 +6,7 @@ import java.util.stream.StreamSupport;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.context.annotation.Scope;
@@ -92,7 +93,7 @@ public class ModelDAO<T> implements JpaRepository<T, Long> {
 	}
 
 	@Override
-	public <S extends T> S save(S entity) {
+	public <S extends T> S save(S entity) throws PersistenceException {
 		em.persist(entity);
 		return entity;
 	}
