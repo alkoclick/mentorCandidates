@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.stream.IntStream;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import model.Mentor;
@@ -15,6 +16,12 @@ import util.HibernateTest;
 public class MentorPersistenceTests extends HibernateTest<Mentor> {
 	private Opinion opinion = new Opinion("Student A", "This is an opinion created standalone");
 	private Mentor mentor = new Mentor("Alex", "Pap", "alexPap@gmail.com", "AlexPap is a Java mentor");
+
+	@Before
+	@Override
+	public void setClass() {
+		service.setModelClass(Mentor.class);
+	}
 
 	/**
 	 * Tests to ensure that a record can be written to the database and a proper ID
@@ -32,11 +39,10 @@ public class MentorPersistenceTests extends HibernateTest<Mentor> {
 	 */
 	@Test
 	public void retrieveAll() {
-		int batchSize = 20;
-		IntStream.range(0, batchSize).forEach(i -> {
+		IntStream.range(0, BATCH_SIZE).forEach(i -> {
 			service.save(new Mentor("Batch", "User", "batch@spam.com", "This is a batch user"));
 		});
-		assertEquals(service.count(), batchSize);
+		assertEquals(service.count(), BATCH_SIZE);
 	}
 
 	/**
@@ -45,13 +51,12 @@ public class MentorPersistenceTests extends HibernateTest<Mentor> {
 	 */
 	@Test
 	public void retrieveById() {
-		service.setModelClass(Mentor.class);
 		mentor.getOpinions().clear();
 		mentor.getOpinions().add(opinion);
 		Mentor savedMentor = service.save(mentor);
-		// service.add(opinion);
 
 		service.findAll().forEach(System.out::println);
+		System.out.println(savedMentor.getId());
 		Mentor dbmentor = service.findOne(savedMentor.getId());
 		assertEquals(dbmentor, mentor);
 		assertEquals(dbmentor.getFirstName(), mentor.getFirstName());

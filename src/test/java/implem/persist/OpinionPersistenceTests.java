@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import model.Mentor;
@@ -18,6 +19,12 @@ import util.OpinionHelper;
 public class OpinionPersistenceTests extends HibernateTest<Opinion> {
 	private Opinion opinion = new Opinion("Student A", "This is an opinion created standalone");
 	private Mentor mentor = new Mentor("Alex", "Pap", "alexPap@gmail.com", "AlexPap is a Java mentor");
+
+	@Before
+	@Override
+	public void setClass() {
+		service.setModelClass(Opinion.class);
+	}
 
 	/**
 	 * Tests to ensure that a record can be written to the database and a proper ID

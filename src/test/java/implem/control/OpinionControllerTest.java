@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 
 import control.OpinionController;
@@ -22,6 +23,12 @@ import util.OpinionHelper;
 
 public class OpinionControllerTest extends ControllerTest<Opinion> {
 	private static final String URI = OpinionController.URI;
+
+	@Before
+	@Override
+	public void setClass() {
+		service.setModelClass(Opinion.class);
+	}
 
 	/**
 	 * Adds a number of opinion records to the db, then tests the /opinions
@@ -119,6 +126,7 @@ public class OpinionControllerTest extends ControllerTest<Opinion> {
 		assertNotEquals(response.length(), 0);
 
 		Opinion postOpinion = mapper.readValue(response, Opinion.class);
+		System.out.println(service.count());
 		Opinion dbOpinion;
 		assertNotNull(dbOpinion = service.findOne(postOpinion.getId()));
 

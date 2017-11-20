@@ -17,7 +17,7 @@ import service.ModelService;
 @SpringBootTest(classes = TestConfig.class)
 @ContextConfiguration
 @WebAppConfiguration
-public abstract class HibernateTest<T> {
+public abstract class HibernateTest<T> implements ClassSetter<T> {
 	protected static int BATCH_SIZE = 20;
 
 	@Autowired

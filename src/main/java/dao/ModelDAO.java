@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.hibernate.cfg.NotYetImplementedException;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@Scope("prototype")
 public class ModelDAO<T> implements JpaRepository<T, Long> {
 
 	private Class<T> modelClass;
@@ -30,6 +32,7 @@ public class ModelDAO<T> implements JpaRepository<T, Long> {
 
 	@Override
 	public List<T> findAll() {
+		System.out.println("Trying to find " + modelClass);
 		return em.createNativeQuery("select * from " + modelClass.getSimpleName(), modelClass).getResultList();
 	}
 
@@ -149,7 +152,7 @@ public class ModelDAO<T> implements JpaRepository<T, Long> {
 		throw new NotYetImplementedException();
 	}
 
-	public final void setModelClass(Class<T> modelClass) {
+	public void setModelClass(Class<T> modelClass) {
 		this.modelClass = modelClass;
 	}
 

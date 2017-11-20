@@ -56,7 +56,7 @@ public abstract class Controller<K> {
 
 		try {
 			K obj = mapper.readValue(body, objClass);
-			service.save(obj);
+			obj = service.save(obj);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(obj);
 		} catch (IOException e) {
 			return ResponseEntity.badRequest().body(HTTP_BADREQUEST);

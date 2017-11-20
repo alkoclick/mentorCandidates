@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 
 import control.MentorController;
@@ -13,6 +14,12 @@ import util.MentorHelper;
 
 public class MentorControllerTest extends ControllerTest<Mentor> {
 	private static final String URI = MentorController.URI;
+
+	@Before
+	@Override
+	public void setClass() {
+		service.setModelClass(Mentor.class);
+	}
 
 	/**
 	 * 
@@ -25,7 +32,7 @@ public class MentorControllerTest extends ControllerTest<Mentor> {
 	@Test
 	public void getRecordTest() throws Exception {
 		Mentor mentor = new Mentor("Alex", "Pap", "a@b.com", "Alex is a Java mentor");
-		service.save(mentor);
+		mentor = service.save(mentor);
 
 		String response = this.mockMvc.perform(get(URI + "/" + mentor.getId()).accept(CONTENT_TYPE))
 				.andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
