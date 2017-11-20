@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import model.Mentor;
 import service.ModelService;
 import util.Messages;
 
@@ -59,6 +60,7 @@ public abstract class Controller<K> {
 
 		try {
 			K obj = mapper.readValue(body, objClass);
+			ifMentorSetKeyOnOpinions(obj);
 			obj = service.save(obj);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(obj);
 		} catch (IOException | PersistenceException e) {
@@ -73,5 +75,21 @@ public abstract class Controller<K> {
 
 	public void setService(ModelService<K> service) {
 		this.service = service;
+	}
+
+	/**
+	 * This is hacky, but it's a quick way to solve the issue without overriding the
+	 * ObjectMapper or going too deep into hibernate/JPA writes. Essentially the
+	 * problem is that when Jackson receives a Mentor with Opinions, the object is
+	 * created properly, but the opinions don't have a mentor key. To avoid forcing
+	 * the client to specify mentor IDs in every opinion, we go for this hack
+	 * 
+	 * @param obj
+	 *            A JSON Object that maps to a POJO, probably Mentor or Opinion
+	 */
+	protected void ifMentorSetKeyOnOpinions(final K obj) {
+		if (obj instanceof Mentor) {
+			((Mentor) obj).getOpinions().forEach(op -> op.setMentor((Mentor) obj));
+		}
 	}
 }

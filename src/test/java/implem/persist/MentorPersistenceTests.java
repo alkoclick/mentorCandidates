@@ -12,6 +12,7 @@ import org.junit.Test;
 import model.Mentor;
 import model.Opinion;
 import util.HibernateTest;
+import util.MentorHelper;
 
 public class MentorPersistenceTests extends HibernateTest<Mentor> {
 	private Opinion opinion = new Opinion("Student A", "This is an opinion created standalone");
@@ -52,20 +53,12 @@ public class MentorPersistenceTests extends HibernateTest<Mentor> {
 	@Test
 	public void retrieveById() {
 		mentor.getOpinions().clear();
-		mentor.getOpinions().add(opinion);
+		mentor.addOpinion(opinion);
 		Mentor savedMentor = service.save(mentor);
 
-		service.findAll().forEach(System.out::println);
-		System.out.println(savedMentor.getId());
 		Mentor dbmentor = service.findOne(savedMentor.getId());
-		assertEquals(dbmentor, mentor);
-		assertEquals(dbmentor.getFirstName(), mentor.getFirstName());
-		assertEquals(dbmentor.getLastName(), mentor.getLastName());
-		assertEquals(dbmentor.getEmail(), mentor.getEmail());
-		assertEquals(dbmentor.getDescription(), mentor.getDescription());
-
+		MentorHelper.testEquality(savedMentor, dbmentor);
 		assertEquals(dbmentor.getOpinions().size(), 1);
-		dbmentor.getOpinions().forEach(op -> assertEquals(op, opinion));
 
 		mentor.getOpinions().clear();
 	}

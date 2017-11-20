@@ -30,7 +30,7 @@ public class Opinion {
 	private String name;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "mentor_id")
+	@JoinColumn(name = "mentor")
 	@JsonIgnore
 	private Mentor mentor;
 

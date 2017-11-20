@@ -19,6 +19,7 @@ import org.junit.Test;
 
 import control.MentorController;
 import model.Mentor;
+import model.Opinion;
 import util.MentorHelper;
 
 public class MentorControllerTest extends ControllerTest<Mentor> {
@@ -45,15 +46,17 @@ public class MentorControllerTest extends ControllerTest<Mentor> {
 	@Test
 	public void getRecordTest() throws Exception {
 		Mentor mentor = new Mentor("Alex", "Pap", "a@b.com", "Alex is a Java mentor");
+		mentor.addOpinion(new Opinion("Jay", "Amazing"));
 		mentor = service.save(mentor);
 
 		String response = this.mockMvc.perform(get(URI + "/" + mentor.getId()).accept(CONTENT_TYPE))
 				.andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 		assertNotNull(new JSONObject(response));
 		// JSON from String to Object
-		Mentor responseOpinion = mapper.readValue(response, Mentor.class);
+		Mentor responseMentor = mapper.readValue(response, Mentor.class);
 
-		MentorHelper.testEquality(mentor, responseOpinion);
+		MentorHelper.testEquality(mentor, responseMentor);
+		assertTrue(responseMentor.getOpinions().size() > 0);
 	}
 
 	/**
@@ -79,25 +82,25 @@ public class MentorControllerTest extends ControllerTest<Mentor> {
 			MentorHelper.testEquality(mapper.readValue(responseMentors.getJSONObject(i).toString(), Mentor.class),
 					mentors.get(i));
 		}
-
-		service.delete(mentors);
 	}
 
 	@Test
 	public void postRecordTest() throws Exception {
 		Mentor mentor = new Mentor("Stan", "Lee", "stan@marvel.com", "Excelsior");
-		assertTrue(this.mockMvc != null);
+		mentor.addOpinion(new Opinion("Neil Gaiman", "Confusing"));
+
 		String response = this.mockMvc
 				.perform(post(URI).content(mapper.writeValueAsString(mentor)).accept(CONTENT_TYPE))
 				.andExpect(status().is2xxSuccessful()).andReturn().getResponse().getContentAsString();
 
-		assertNotNull(new JSONObject(response));
 		assertNotEquals(response.length(), 0);
+		assertNotNull(new JSONObject(response));
 
 		Mentor postMentor = mapper.readValue(response, Mentor.class);
-		Mentor dbOpinion;
-		assertNotNull(dbOpinion = service.findOne(postMentor.getId()));
+		Mentor dbMentor;
+		assertNotNull(dbMentor = service.findOne(postMentor.getId()));
+		MentorHelper.testEquality(postMentor, dbMentor);
 
-		service.delete(dbOpinion);
+		assertTrue(postMentor.getOpinions().size() > 0);
 	}
 }

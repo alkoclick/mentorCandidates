@@ -12,8 +12,6 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 
@@ -44,7 +42,6 @@ public class Mentor {
 	private String email;
 
 	@OneToMany(mappedBy = "mentor", cascade = CascadeType.ALL)
-	@LazyCollection(LazyCollectionOption.FALSE)
 	private Collection<Opinion> opinions;
 
 	@Column
