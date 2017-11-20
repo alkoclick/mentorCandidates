@@ -1,39 +1,27 @@
 package dao;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import model.Mentor;
-
 @Repository
-public class ModelDAO<T> implements DAO<T> {
+public class ModelDAO<T> implements JpaRepository<T, Long> {
+
+	private Class<T> modelClass;
 
 	@PersistenceContext
 	private EntityManager em;
-
-	@Override
-	public void add(T m) {
-		em.persist(m);
-	}
-
-	@Override
-	public Collection<T> getAll() {
-		return em.createNativeQuery("select * from mentor", Mentor.class).getResultList();
-	}
-
-	@Override
-	public T getById(long id) {
-		return (T) em.find(Mentor.class, id);
-	}
 
 	@Override
 	public void delete(T m) {
@@ -42,140 +30,127 @@ public class ModelDAO<T> implements DAO<T> {
 
 	@Override
 	public List<T> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		return em.createNativeQuery("select * from " + modelClass.getSimpleName(), modelClass).getResultList();
 	}
 
 	@Override
 	public List<T> findAll(Sort sort) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new NotYetImplementedException();
 	}
 
 	@Override
 	public List<T> findAll(Iterable<Long> ids) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new NotYetImplementedException();
 	}
 
 	@Override
 	public <S extends T> List<S> save(Iterable<S> entities) {
-		// TODO Auto-generated method stub
-		return null;
+		return StreamSupport.stream(entities.spliterator(), false).map(this::save).collect(Collectors.toList());
 	}
 
 	@Override
 	public void flush() {
-		// TODO Auto-generated method stub
-
+		em.flush();
 	}
 
 	@Override
 	public <S extends T> S saveAndFlush(S entity) {
-		// TODO Auto-generated method stub
-		return null;
+		S entityCopy = save(entity);
+		flush();
+		return entityCopy;
 	}
 
 	@Override
 	public void deleteInBatch(Iterable<T> entities) {
-		// TODO Auto-generated method stub
-
+		throw new NotYetImplementedException();
 	}
 
 	@Override
 	public void deleteAllInBatch() {
-		// TODO Auto-generated method stub
-
+		throw new NotYetImplementedException();
 	}
 
-	@Override
 	public T getOne(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return em.find(modelClass, id);
 	}
 
 	@Override
 	public <S extends T> List<S> findAll(Example<S> example) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new NotYetImplementedException();
 	}
 
 	@Override
 	public <S extends T> List<S> findAll(Example<S> example, Sort sort) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new NotYetImplementedException();
 	}
 
 	@Override
 	public Page<T> findAll(Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new NotYetImplementedException();
 	}
 
 	@Override
 	public <S extends T> S save(S entity) {
-		// TODO Auto-generated method stub
-		return null;
+		em.persist(entity);
+		return entity;
 	}
 
 	@Override
 	public T findOne(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return em.find(modelClass, id);
 	}
 
 	@Override
 	public boolean exists(Long id) {
-		// TODO Auto-generated method stub
-		return false;
+		return findOne(id) != null;
 	}
 
 	@Override
 	public long count() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (long) em.createQuery("select count(1) from  " + modelClass.getSimpleName()).getSingleResult();
 	}
 
 	@Override
 	public void delete(Long id) {
-		// TODO Auto-generated method stub
-
+		T t = findOne(id);
+		em.remove(t);
 	}
 
 	@Override
 	public void delete(Iterable<? extends T> entities) {
-		// TODO Auto-generated method stub
-
+		entities.forEach(em::remove);
 	}
 
+	// You may want to switch this to iterative deletion to properly trigger
+	// cascades
+	// See https://stackoverflow.com/questions/3492453/hibernate-and-delete-all
 	@Override
 	public void deleteAll() {
-		// TODO Auto-generated method stub
-
+		em.createQuery("DELETE FROM " + modelClass.getSimpleName());
 	}
 
 	@Override
 	public <S extends T> S findOne(Example<S> example) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new NotYetImplementedException();
 	}
 
 	@Override
 	public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new NotYetImplementedException();
 	}
 
 	@Override
 	public <S extends T> long count(Example<S> example) {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new NotYetImplementedException();
 	}
 
 	@Override
 	public <S extends T> boolean exists(Example<S> example) {
-		// TODO Auto-generated method stub
-		return false;
+		throw new NotYetImplementedException();
+	}
+
+	public final void setModelClass(Class<T> modelClass) {
+		this.modelClass = modelClass;
 	}
 
 }

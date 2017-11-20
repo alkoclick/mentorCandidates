@@ -25,7 +25,7 @@ public class OpinionPersistenceTests extends HibernateTest<Opinion> {
 	 */
 	@Test
 	public void addToDb() {
-		service.add(opinion);
+		service.save(opinion);
 		assertNotEquals(opinion.getId(), 0);
 		assertTrue(service.exists(opinion.getId()));
 	}
@@ -37,11 +37,11 @@ public class OpinionPersistenceTests extends HibernateTest<Opinion> {
 	public void retrieveAll() {
 		List<Opinion> opinions = IntStream.range(0, BATCH_SIZE).mapToObj(i -> {
 			Opinion currentOpinion = new Opinion("Student B", "B is for batch");
-			service.add(currentOpinion);
+			service.save(currentOpinion);
 			return currentOpinion;
 		}).collect(Collectors.toList());
 
-		assertEquals(service.getAll().size(), BATCH_SIZE);
+		assertEquals(service.count(), BATCH_SIZE);
 
 		opinions.forEach(op -> service.delete(op));
 	}
@@ -54,10 +54,10 @@ public class OpinionPersistenceTests extends HibernateTest<Opinion> {
 	public void retrieveById() {
 		opinion.setMentor(mentor);
 
-		service.add(opinion);
+		service.save(opinion);
 		// service.add(mentor);
 
-		Opinion dbOpinion = service.getById(opinion.getId());
+		Opinion dbOpinion = service.findOne(opinion.getId());
 		OpinionHelper.testEquality(dbOpinion, opinion);
 
 		opinion.setMentor(null);

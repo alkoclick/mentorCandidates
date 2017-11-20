@@ -1,6 +1,5 @@
 package service;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -10,34 +9,24 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import dao.ModelDAO;
 
 @Service
 @Transactional
-public class ModelService<T> implements EntityService<T> {
+public class ModelService<T> implements JpaRepository<T, Long> {
 
 	@Autowired
 	protected ModelDAO<T> modelDAO;
 
+	public void setModelClass(Class<T> modelClass) {
+		modelDAO.setModelClass(modelClass);
+	}
+
 	public ModelDAO<T> getModelDAO() {
 		return modelDAO;
-	}
-
-	@Override
-	public void add(T t) {
-		this.modelDAO.add(t);
-	}
-
-	@Override
-	public Collection<T> getAll() {
-		return this.modelDAO.getAll();
-	}
-
-	@Override
-	public T getById(long id) {
-		return this.modelDAO.getById(id);
 	}
 
 	@Override
@@ -47,80 +36,67 @@ public class ModelService<T> implements EntityService<T> {
 
 	@Override
 	public List<T> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		return modelDAO.findAll();
 	}
 
 	@Override
 	public List<T> findAll(Sort sort) {
-		// TODO Auto-generated method stub
-		return null;
+		return modelDAO.findAll(sort);
 	}
 
 	@Override
 	public List<T> findAll(Iterable<Long> ids) {
-		// TODO Auto-generated method stub
-		return null;
+		return modelDAO.findAll(ids);
 	}
 
 	@Override
 	public <S extends T> List<S> save(Iterable<S> entities) {
-		// TODO Auto-generated method stub
-		return null;
+		return modelDAO.save(entities);
 	}
 
 	@Override
 	public void flush() {
-		// TODO Auto-generated method stub
-
+		modelDAO.flush();
 	}
 
 	@Override
 	public <S extends T> S saveAndFlush(S entity) {
-		// TODO Auto-generated method stub
-		return null;
+		return modelDAO.saveAndFlush(entity);
 	}
 
 	@Override
 	public void deleteInBatch(Iterable<T> entities) {
-		// TODO Auto-generated method stub
-
+		modelDAO.delete(entities);
 	}
 
 	@Override
 	public void deleteAllInBatch() {
-		// TODO Auto-generated method stub
-
+		modelDAO.deleteAllInBatch();
 	}
 
 	@Override
 	public T getOne(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return modelDAO.getOne(id);
 	}
 
 	@Override
 	public <S extends T> List<S> findAll(Example<S> example) {
-		// TODO Auto-generated method stub
-		return null;
+		return modelDAO.findAll(example);
 	}
 
 	@Override
 	public <S extends T> List<S> findAll(Example<S> example, Sort sort) {
-		// TODO Auto-generated method stub
-		return null;
+		return modelDAO.findAll(example, sort);
 	}
 
 	@Override
 	public Page<T> findAll(Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		return modelDAO.findAll(pageable);
 	}
 
 	@Override
 	public <S extends T> S save(S entity) {
-		// TODO Auto-generated method stub
-		return null;
+		return modelDAO.save(entity);
 	}
 
 	@Override
@@ -131,56 +107,47 @@ public class ModelService<T> implements EntityService<T> {
 
 	@Override
 	public boolean exists(Long id) {
-		// TODO Auto-generated method stub
-		return false;
+		return modelDAO.exists(id);
 	}
 
 	@Override
 	public long count() {
-		// TODO Auto-generated method stub
-		return 0;
+		return modelDAO.count();
 	}
 
 	@Override
 	public void delete(Long id) {
-		// TODO Auto-generated method stub
-
+		modelDAO.delete(id);
 	}
 
 	@Override
 	public void delete(Iterable<? extends T> entities) {
-		// TODO Auto-generated method stub
-
+		modelDAO.delete(entities);
 	}
 
 	@Override
 	public void deleteAll() {
-		// TODO Auto-generated method stub
-
+		modelDAO.deleteAll();
 	}
 
 	@Override
 	public <S extends T> S findOne(Example<S> example) {
-		// TODO Auto-generated method stub
-		return null;
+		return modelDAO.findOne(example);
 	}
 
 	@Override
 	public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		return modelDAO.findAll(example, pageable);
 	}
 
 	@Override
 	public <S extends T> long count(Example<S> example) {
-		// TODO Auto-generated method stub
-		return 0;
+		return modelDAO.count(example);
 	}
 
 	@Override
 	public <S extends T> boolean exists(Example<S> example) {
-		// TODO Auto-generated method stub
-		return false;
+		return modelDAO.exists(example);
 	}
 
 }

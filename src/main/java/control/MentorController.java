@@ -1,5 +1,6 @@
 package control;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -9,11 +10,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import model.Mentor;
+import service.ModelService;
 
 @Controller
 public class MentorController extends control.Controller<Mentor> {
 
 	public static final String URI = "/mentor";
+
+	@Override
+	@Autowired
+	public void setService(ModelService<Mentor> service) {
+		super.setService(service);
+		service.setModelClass(Mentor.class);
+	}
 
 	/**
 	 * The mapper for GET requests in the /mentor/{id} endpoint.

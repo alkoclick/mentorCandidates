@@ -25,7 +25,7 @@ public class MentorControllerTest extends ControllerTest<Mentor> {
 	@Test
 	public void getRecordTest() throws Exception {
 		Mentor mentor = new Mentor("Alex", "Pap", "a@b.com", "Alex is a Java mentor");
-		service.add(mentor);
+		service.save(mentor);
 
 		String response = this.mockMvc.perform(get(URI + "/" + mentor.getId()).accept(CONTENT_TYPE))
 				.andExpect(status().isOk()).andReturn().getResponse().getContentAsString();

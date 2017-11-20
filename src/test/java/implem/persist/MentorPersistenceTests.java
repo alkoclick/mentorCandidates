@@ -22,7 +22,7 @@ public class MentorPersistenceTests extends HibernateTest<Mentor> {
 	 */
 	@Test
 	public void addToDb() {
-		service.add(mentor);
+		service.save(mentor);
 		assertNotEquals(mentor.getId(), 0);
 		assertTrue(service.exists(mentor.getId()));
 	}
@@ -34,9 +34,9 @@ public class MentorPersistenceTests extends HibernateTest<Mentor> {
 	public void retrieveAll() {
 		int batchSize = 20;
 		IntStream.range(0, batchSize).forEach(i -> {
-			service.add(new Mentor("Batch", "User", "batch@spam.com", "This is a batch user"));
+			service.save(new Mentor("Batch", "User", "batch@spam.com", "This is a batch user"));
 		});
-		assertEquals(service.getAll(), batchSize);
+		assertEquals(service.count(), batchSize);
 	}
 
 	/**
@@ -45,12 +45,14 @@ public class MentorPersistenceTests extends HibernateTest<Mentor> {
 	 */
 	@Test
 	public void retrieveById() {
+		service.setModelClass(Mentor.class);
 		mentor.getOpinions().clear();
 		mentor.getOpinions().add(opinion);
-		service.add(mentor);
+		Mentor savedMentor = service.save(mentor);
 		// service.add(opinion);
 
-		Mentor dbmentor = service.getById(mentor.getId());
+		service.findAll().forEach(System.out::println);
+		Mentor dbmentor = service.findOne(savedMentor.getId());
 		assertEquals(dbmentor, mentor);
 		assertEquals(dbmentor.getFirstName(), mentor.getFirstName());
 		assertEquals(dbmentor.getLastName(), mentor.getLastName());

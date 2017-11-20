@@ -3,7 +3,6 @@ package control;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -16,7 +15,6 @@ public abstract class Controller<K> {
 	private static final Object HTTP_BADREQUEST = "Bad";
 	ObjectMapper mapper = new ObjectMapper();
 
-	@Autowired
 	protected ModelService<K> service;
 
 	/**
@@ -33,10 +31,10 @@ public abstract class Controller<K> {
 	 */
 	protected ResponseEntity<?> getResponseEntity(Class<K> objClass, Long id) {
 		if (id != null) {
-			K obj = service.getById(id);
+			K obj = service.findOne(id);
 			return obj != null ? ResponseEntity.ok(obj) : ResponseEntity.notFound().build();
 		} else {
-			Collection<?> results = service.getAll();
+			Collection<?> results = service.findAll();
 			return results != null ? ResponseEntity.ok(results) : ResponseEntity.notFound().build();
 		}
 	}
@@ -58,7 +56,7 @@ public abstract class Controller<K> {
 
 		try {
 			K obj = mapper.readValue(body, objClass);
-			service.add(obj);
+			service.save(obj);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(obj);
 		} catch (IOException e) {
 			return ResponseEntity.badRequest().body(HTTP_BADREQUEST);

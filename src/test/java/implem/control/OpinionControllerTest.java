@@ -34,7 +34,7 @@ public class OpinionControllerTest extends ControllerTest<Opinion> {
 	public void getAllRecords() throws Exception {
 		List<Opinion> opinions = IntStream.range(0, BATCH_SIZE).mapToObj(i -> {
 			Opinion currentOpinion = new Opinion("Student B", "B is for batch");
-			service.add(currentOpinion);
+			service.save(currentOpinion);
 			return currentOpinion;
 		}).collect(Collectors.toList());
 
@@ -120,7 +120,7 @@ public class OpinionControllerTest extends ControllerTest<Opinion> {
 
 		Opinion postOpinion = mapper.readValue(response, Opinion.class);
 		Opinion dbOpinion;
-		assertNotNull(dbOpinion = service.getById(postOpinion.getId()));
+		assertNotNull(dbOpinion = service.findOne(postOpinion.getId()));
 
 		service.delete(dbOpinion);
 	}

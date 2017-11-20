@@ -1,5 +1,6 @@
 package control;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -9,10 +10,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import model.Opinion;
+import service.ModelService;
 
 @Controller
 public class OpinionController extends control.Controller<Opinion> {
 	public static final String URI = "/opinion";
+
+	@Override
+	@Autowired
+	public void setService(ModelService<Opinion> service) {
+		super.setService(service);
+		service.setModelClass(Opinion.class);
+	}
 
 	/**
 	 * The mapper for GET requests in the /opinion/{id} endpoint.
@@ -51,4 +60,5 @@ public class OpinionController extends control.Controller<Opinion> {
 	ResponseEntity<?> postOpinion(@RequestBody(required = true) String body) {
 		return postResponseEntity(Opinion.class, body);
 	}
+
 }
