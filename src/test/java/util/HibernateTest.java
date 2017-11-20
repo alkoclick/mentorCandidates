@@ -14,7 +14,7 @@ import service.ModelService;
 
 @RunWith(SpringRunner.class)
 @Transactional
-@SpringBootTest(classes = TestConfig.class)
+@SpringBootTest(classes = AppConfig.class)
 @ContextConfiguration
 @WebAppConfiguration
 public abstract class HibernateTest<T> implements ClassSetter<T> {

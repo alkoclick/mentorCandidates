@@ -1,3 +1,7 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
 buildscript {
     repositories {
         mavenCentral()
@@ -7,13 +11,9 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-
 jar {
-    baseName = 'gs-spring-boot'
-    version =  '0.1.0'
+    baseName = 'mentorCandidates'
+    version =  '1.0.0'
 }
 
 repositories {
@@ -29,10 +29,10 @@ dependencies {
     }
     compile("org.springframework.boot:spring-boot-starter-jetty")    
     testCompile('org.springframework.boot:spring-boot-starter-test')
-    testCompile('org.springframework.boot:spring-boot-starter-data-jpa')
-    compile("org.hibernate:hibernate-core")
-    compile("mysql:mysql-connector-java:8.0.8-dmr")
-    testCompile("junit:junit")
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.hibernate:hibernate-core')
+    compile('mysql:mysql-connector-java:8.0.8-dmr')
+    testCompile('junit:junit')
 
     testCompile('org.hsqldb:hsqldb:2.4.0')
     testCompile('com.h2database:h2:1.4.196')
