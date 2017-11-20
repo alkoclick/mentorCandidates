@@ -6,14 +6,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import control.Controller;
-import dao.DAO;
+import dao.ModelDAO;
 import model.Model;
-import service.EntityService;
+import service.ModelService;
 
 @Configuration
 @EnableAutoConfiguration
 @EntityScan(basePackageClasses = Model.class)
-@ComponentScan(basePackageClasses = { Controller.class, DAO.class, EntityService.class, AppConfig.class })
+@ComponentScan(basePackageClasses = { Controller.class, ModelDAO.class, ModelService.class, AppConfig.class })
 public class TestConfig {
 
 }
