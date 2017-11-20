@@ -1,6 +1,16 @@
 # mentorCandidates
 
 A simple app built as part of CodeCool's hiring process
+Uses: 
+ * Java 8
+ * Git
+ * Gradle
+ * Hibernate & JPA
+ * h2
+ * MySQL
+ * Spring Boot
+ * JUnit
+ * Docker & Docker Compose
 
 Requirements:
 
