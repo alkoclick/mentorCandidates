@@ -25,12 +25,4 @@ public abstract class HibernateTest<T> implements ClassSetter<T> {
 
 	@Autowired
 	protected ModelService<T> service;
-
-	public ModelService<T> getService() {
-		return service;
-	}
-
-	public void setService(ModelService<T> service) {
-		this.service = service;
-	}
 }
