@@ -11,10 +11,11 @@ import org.springframework.http.ResponseEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import service.ModelService;
+import util.Messages;
 
 public abstract class Controller<K> {
-	private static final Object HTTP_EMPTYREQUEST = "Empty";
-	private static final Object HTTP_BADREQUEST = "Bad";
+	private static final String HTTP_EMPTYREQUEST = Messages.getString("HTTP.Empty");
+	private static final String HTTP_BADREQUEST = Messages.getString("HTTP.Bad");
 	ObjectMapper mapper = new ObjectMapper();
 
 	protected ModelService<K> service;
@@ -53,7 +54,7 @@ public abstract class Controller<K> {
 	 *         appropriate error code.
 	 */
 	protected ResponseEntity<?> postResponseEntity(Class<K> objClass, String body) {
-		if (body == null || body.isEmpty() || body.equals("{}"))
+		if (body == null || body.isEmpty() || body.equals(Messages.getString("JSON.Empty"))) //$NON-NLS-1$
 			return ResponseEntity.badRequest().body(HTTP_EMPTYREQUEST);
 
 		try {
