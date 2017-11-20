@@ -32,7 +32,6 @@ public class ModelDAO<T> implements JpaRepository<T, Long> {
 
 	@Override
 	public List<T> findAll() {
-		System.out.println("Trying to find " + modelClass);
 		return em.createNativeQuery("select * from " + modelClass.getSimpleName(), modelClass).getResultList();
 	}
 

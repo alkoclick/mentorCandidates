@@ -3,6 +3,7 @@ package model;
 import java.util.Collection;
 import java.util.HashSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -42,7 +43,7 @@ public class Mentor {
 	@Length(max = 100)
 	private String email;
 
-	@OneToMany(mappedBy = "mentor")
+	@OneToMany(mappedBy = "mentor", cascade = CascadeType.ALL)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private Collection<Opinion> opinions;
 
